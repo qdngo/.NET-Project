@@ -2,6 +2,7 @@ Stock Market Management API and Interface
 A full-stack application that allows users to manage and interact with stock market data. The backend is powered by ASP.NET Core for handling API requests, and the frontend is developed using React for an interactive user interface.
 
 Features
+
 User Features
 User Authentication:
 
