@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 using api.Data;
 using api.Dtos.Stock;
 using api.Helpers;
@@ -32,7 +30,8 @@ namespace api.Repository
         {
             var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
 
-            if(stockModel == null){
+            if (stockModel == null)
+            {
                 return null;
             }
 
@@ -43,9 +42,9 @@ namespace api.Repository
 
         public async Task<List<Stock>> GetAllAsync(QueryObject query)
         {
-            var stocks = _context.Stocks.Include(c => c.Comments).AsQueryable();
-            
-            if(!string.IsNullOrWhiteSpace(query.CompanyName))
+            var stocks = _context.Stocks.Include(c => c.Comments).ThenInclude(a => a.AppUser).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.CompanyName))
             {
                 stocks = stocks.Where(s => s.CompanyName.Contains(query.CompanyName));
             }
@@ -55,15 +54,16 @@ namespace api.Repository
                 stocks = stocks.Where(s => s.Symbol.Contains(query.Symbol));
             }
 
-            if(!string.IsNullOrWhiteSpace(query.SortBy))
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
-                if(query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
+                if (query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
                 {
                     stocks = query.IsDecsending ? stocks.OrderByDescending(s => s.Symbol) : stocks.OrderBy(s => s.Symbol);
                 }
             }
 
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
 
             return await stocks.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
@@ -87,7 +87,8 @@ namespace api.Repository
         {
             var existingStock = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
 
-            if(existingStock == null){
+            if (existingStock == null)
+            {
                 return null;
             }
 
@@ -96,7 +97,7 @@ namespace api.Repository
             existingStock.Purchase = stockDto.Purchase;
             existingStock.LastDiv = stockDto.LastDiv;
             existingStock.Industry = stockDto.Industry;
-            existingStock.MarketCap = stockDto.MarketCap;            
+            existingStock.MarketCap = stockDto.MarketCap;
 
             await _context.SaveChangesAsync();
 
