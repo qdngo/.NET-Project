@@ -25,4 +25,3 @@ module.exports = {
   plugins: [],
 };
 
-C:\Users\qdaon\Documents\.NET-Project\frontend\src\Components\Portfolio\ListPortfolio\ListPortfolio.tsx
